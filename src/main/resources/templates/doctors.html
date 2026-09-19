@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors - Hospital Management System</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="dashboard-page">
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+            <span class="brand-icon">+</span>
+            <h2>Hospital Management</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <span class="nav-section-label">Main Navigation</span>
+
+            <a href="/dashboard">
+                Dashboard
+            </a>
+
+            <a href="/patients">
+                Patients
+            </a>
+
+            <a href="/doctors" class="active">
+                Doctors
+            </a>
+
+            <a href="/appointments">
+                Appointments
+            </a>
+
+            <span class="nav-section-label">Clinical &amp; Finance</span>
+
+            <a href="/prescriptions">
+                Prescriptions
+            </a>
+
+            <a href="/billing">
+                Billing &amp; Invoice
+            </a>
+
+            <span class="nav-section-label" data-hide-for="DOCTOR,RECEPTIONIST">Administration</span>
+
+            <a href="/staff" data-hide-for="DOCTOR,RECEPTIONIST">
+                Staff Accounts
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-footer-avatar" id="sidebarAvatar">U</div>
+            <div class="sidebar-footer-info">
+                <div class="sidebar-footer-name" id="sidebarUserName">User</div>
+                <span class="sidebar-footer-role" id="sidebarUserRole">ROLE</span>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- Main Content -->
+    <div class="content">
+
+        <div class="page-header">
+
+            <h1>Doctor Management</h1>
+
+            <button
+                    type="button"
+                    class="logout-btn"
+                    onclick="handleLogout()"
+            >
+                Logout
+            </button>
+
+        </div>
+
+        <div class="controls-bar">
+
+            <div class="filters-group">
+
+                <div class="search-bar">
+                    <input
+                            type="text"
+                            id="doctorSearch"
+                            class="form-input"
+                            placeholder="Search by doctor name, dept, or specialization..."
+                    >
+                </div>
+
+                <select id="doctorSpecFilter" class="form-select">
+                    <option value="">All Specializations</option>
+                </select>
+
+                <button
+                        type="button"
+                        class="btn btn-primary"
+                        onclick="openAddDoctorModal()"
+                        data-hide-for="DOCTOR,RECEPTIONIST"
+                >
+                    + Add New Doctor
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="panel-card">
+
+            <div class="table-responsive">
+                <table class="custom-table">
+
+                    <thead>
+                    <tr>
+                        <th>Doctor Name &amp; Dept</th>
+                        <th>Specialization</th>
+                        <th>Experience</th>
+                        <th>Contact Information</th>
+                        <th data-hide-for="DOCTOR">Consultation Fee</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="doctorTableBody">
+                    <tr>
+                        <td colspan="6" style="text-align:center;padding:24px;">
+                            Loading doctors...
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+            <div class="panel-body">
+                <div class="pagination-wrapper">
+
+                    <div id="doctorPaginationInfo">
+                        Showing 0 doctors
+                    </div>
+
+                    <div class="pagination-controls">
+
+                        <button
+                                class="btn btn-secondary btn-sm"
+                                id="doctorPrevBtn"
+                                disabled
+                        >
+                            Previous
+                        </button>
+
+                        <button
+                                class="btn btn-secondary btn-sm"
+                                id="doctorNextBtn"
+                                disabled
+                        >
+                            Next
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Add / Edit Doctor Modal -->
+<div class="modal-overlay" id="doctorModal">
+
+    <div class="modal-content modal-lg">
+
+        <div class="modal-header">
+
+            <h3 class="modal-title" id="doctorModalTitle">
+                Add New Doctor
+            </h3>
+
+            <button
+                    class="modal-close-btn"
+                    type="button"
+                    data-modal-close
+            >
+                ×
+            </button>
+
+        </div>
+
+        <form id="doctorForm">
+
+            <input type="hidden" id="doctorId">
+
+            <div class="modal-body">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label class="form-label" for="docName">
+                            Full Name <span class="required">*</span>
+                        </label>
+                        <input
+                                type="text"
+                                id="docName"
+                                class="form-input"
+                                placeholder="e.g. Dr. Sarah Jenkins"
+                                required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="docSpecialization">
+                            Specialization <span class="required">*</span>
+                        </label>
+                        <input
+                                type="text"
+                                id="docSpecialization"
+                                class="form-input"
+                                placeholder="e.g. Cardiology"
+                                required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="docDepartment">
+                            Department <span class="required">*</span>
+                        </label>
+                        <input
+                                type="text"
+                                id="docDepartment"
+                                class="form-input"
+                                placeholder="e.g. Cardiovascular Diseases"
+                                required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="docExperience">
+                            Experience (years) <span class="required">*</span>
+                        </label>
+                        <input
+                                type="number"
+                                id="docExperience"
+                                class="form-input"
+                                placeholder="e.g. 12"
+                                min="0"
+                                required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="docPhone">
+                            Phone Number (10 digits) <span class="required">*</span>
+                        </label>
+                        <input
+                                type="text"
+                                id="docPhone"
+                                class="form-input"
+                                placeholder="e.g. 9876500001"
+                                pattern="[0-9]{10}"
+                                required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="docEmail">
+                            Email Address <span class="required">*</span>
+                        </label>
+                        <input
+                                type="email"
+                                id="docEmail"
+                                class="form-input"
+                                placeholder="e.g. s.jenkins@hospital.com"
+                                required
+                        >
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="docFee">
+                        Consultation Fee (₹) <span class="required">*</span>
+                    </label>
+                    <input
+                            type="number"
+                            id="docFee"
+                            class="form-input"
+                            placeholder="e.g. 120.00"
+                            min="0.01"
+                            step="0.01"
+                            required
+                    >
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-modal-close
+                >
+                    Cancel
+                </button>
+
+                <button
+                        type="submit"
+                        class="btn btn-primary"
+                >
+                    Save Doctor
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script src="/js/doctors.js"></script>
+
+</body>
+
+</html>

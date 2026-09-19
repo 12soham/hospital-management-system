@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hospital Management System - Login</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="login-card">
+
+        <h1>Hospital Management System</h1>
+
+        <p class="login-subtitle">
+            Login to your account
+        </p>
+
+        <form id="loginForm">
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">Email</label>
+
+                <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        required
+                >
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password">Password</label>
+
+                <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required
+                >
+            </div>
+
+            <!-- Error message -->
+            <p id="errorMessage" class="error-message"></p>
+
+            <!-- Login button -->
+            <button type="submit" class="login-btn">
+                Login
+            </button>
+
+        </form>
+
+        <!-- Quick Demo Login -->
+        <div class="demo-login-box">
+
+            <p class="demo-login-title">
+                Quick Demo Login
+            </p>
+
+            <div class="demo-login-grid">
+
+                <button
+                        type="button"
+                        class="demo-login-card"
+                        onclick="document.getElementById('email').value='admin@hospital.com'; document.getElementById('password').value='admin123';"
+                >
+                    <strong>Admin</strong>
+                    <span>admin123</span>
+                </button>
+
+                <button
+                        type="button"
+                        class="demo-login-card"
+                        onclick="document.getElementById('email').value='doctor@hospital.com'; document.getElementById('password').value='doctor123';"
+                >
+                    <strong>Doctor</strong>
+                    <span>doctor123</span>
+                </button>
+
+                <button
+                        type="button"
+                        class="demo-login-card"
+                        onclick="document.getElementById('email').value='reception@hospital.com'; document.getElementById('password').value='reception123';"
+                >
+                    <strong>Receptionist</strong>
+                    <span>reception123</span>
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/js/login.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescriptions - Hospital Management System</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="dashboard-page">
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+            <span class="brand-icon">+</span>
+            <h2>Hospital Management</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <span class="nav-section-label">Main Navigation</span>
+
+            <a href="/dashboard">
+                Dashboard
+            </a>
+
+            <a href="/patients">
+                Patients
+            </a>
+
+            <a href="/doctors">
+                Doctors
+            </a>
+
+            <a href="/appointments">
+                Appointments
+            </a>
+
+            <span class="nav-section-label">Clinical &amp; Finance</span>
+
+            <a href="/prescriptions" class="active">
+                Prescriptions
+            </a>
+
+            <a href="/billing">
+                Billing &amp; Invoice
+            </a>
+
+            <span class="nav-section-label" data-hide-for="DOCTOR,RECEPTIONIST">Administration</span>
+
+            <a href="/staff" data-hide-for="DOCTOR,RECEPTIONIST">
+                Staff Accounts
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-footer-avatar" id="sidebarAvatar">U</div>
+            <div class="sidebar-footer-info">
+                <div class="sidebar-footer-name" id="sidebarUserName">User</div>
+                <span class="sidebar-footer-role" id="sidebarUserRole">ROLE</span>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- Main Content -->
+    <div class="content">
+
+        <div class="page-header">
+
+            <h1>Prescription Records</h1>
+
+            <button
+                    type="button"
+                    class="logout-btn"
+                    onclick="handleLogout()"
+            >
+                Logout
+            </button>
+
+        </div>
+
+        <div class="controls-bar">
+
+            <div class="search-bar">
+                <input
+                        type="text"
+                        id="prescriptionSearchInput"
+                        class="form-input"
+                        placeholder="Search by patient, doctor, or diagnosis..."
+                >
+            </div>
+
+            <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="addPrescriptionBtn"
+                    data-hide-for="RECEPTIONIST"
+            >
+                + New Prescription
+            </button>
+
+        </div>
+
+        <div class="panel-card">
+
+            <div class="table-responsive">
+                <table class="custom-table">
+
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Patient Name</th>
+                        <th>Doctor</th>
+                        <th>Clinical Diagnosis</th>
+                        <th>Doctor Notes</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="prescriptionTableBody">
+                    <tr>
+                        <td colspan="6" style="text-align:center;padding:24px;">
+                            Loading prescriptions...
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+            <div class="panel-body">
+                <div class="pagination-wrapper">
+
+                    <div id="prescriptionPaginationInfo">
+                        Showing 0 prescriptions
+                    </div>
+
+                    <div class="pagination-controls">
+
+                        <button
+                                class="btn btn-secondary btn-sm"
+                                id="prescriptionPrevBtn"
+                                disabled
+                        >
+                            Previous
+                        </button>
+
+                        <button
+                                class="btn btn-secondary btn-sm"
+                                id="prescriptionNextBtn"
+                                disabled
+                        >
+                            Next
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Add / Edit Prescription Modal -->
+<div class="modal-overlay" id="prescriptionModal">
+
+    <div class="modal-content modal-lg">
+
+        <div class="modal-header">
+
+            <h3 class="modal-title" id="prescriptionModalTitle">
+                New Prescription
+            </h3>
+
+            <button
+                    class="modal-close-btn"
+                    type="button"
+                    id="closeModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <form id="prescriptionForm">
+
+            <input type="hidden" id="prescriptionId">
+
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label class="form-label" for="appointmentId">
+                        Appointment <span class="required">*</span>
+                    </label>
+                    <select
+                            id="appointmentId"
+                            class="form-select"
+                            required
+                    >
+                        <option value="">Select Appointment</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="diagnosis">
+                        Clinical Diagnosis <span class="required">*</span>
+                    </label>
+                    <input
+                            type="text"
+                            id="diagnosis"
+                            class="form-input"
+                            placeholder="e.g. Type 2 Diabetes Mellitus with Hyperlipidemia"
+                            required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="medicines">
+                        Medicines <span class="required">*</span>
+                    </label>
+                    <textarea
+                            id="medicines"
+                            class="form-input"
+                            rows="4"
+                            placeholder="Enter medicines, dosage, and frequency..."
+                            required
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="notes">
+                        Doctor Notes
+                    </label>
+                    <textarea
+                            id="notes"
+                            class="form-input"
+                            rows="3"
+                            placeholder="Enter any additional notes..."
+                    ></textarea>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                        type="button"
+                        class="btn btn-secondary"
+                        id="cancelModalBtn"
+                >
+                    Cancel
+                </button>
+
+                <button
+                        type="submit"
+                        class="btn btn-primary"
+                >
+                    Save Prescription
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script src="/js/prescriptions.js"></script>
+
+</body>
+</html>

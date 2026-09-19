@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Dashboard</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="dashboard-page">
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+            <span class="brand-icon">+</span>
+            <h2>Hospital Management</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <span class="nav-section-label">Main Navigation</span>
+
+            <a href="/dashboard" class="active">
+                Dashboard
+            </a>
+
+            <a href="/patients">
+                Patients
+            </a>
+
+            <a href="/doctors">
+                Doctors
+            </a>
+
+            <a href="/appointments">
+                Appointments
+            </a>
+
+            <span class="nav-section-label">Clinical &amp; Finance</span>
+
+            <a href="/prescriptions">
+                Prescriptions
+            </a>
+
+            <a href="/billing">
+                Billing &amp; Invoice
+            </a>
+
+            <span class="nav-section-label" data-hide-for="DOCTOR,RECEPTIONIST">Administration</span>
+
+            <a href="/staff" data-hide-for="DOCTOR,RECEPTIONIST">
+                Staff Accounts
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <!-- Main Content -->
+    <div class="content">
+
+        <div class="page-header">
+
+            <h1>Dashboard</h1>
+
+            <button
+                    type="button"
+                    class="logout-btn"
+                    onclick="handleLogout()"
+            >
+                Logout
+            </button>
+
+        </div>
+
+        <div class="cards">
+
+            <div class="card">
+                <div class="card-top">
+                    <h3>Total Patients</h3>
+                    <span class="card-icon">PT</span>
+                </div>
+                <p id="patientCount">0</p>
+            </div>
+
+            <div class="card">
+                <div class="card-top">
+                    <h3>Total Doctors</h3>
+                    <span class="card-icon">DR</span>
+                </div>
+                <p id="doctorCount">0</p>
+            </div>
+
+            <div class="card">
+                <div class="card-top">
+                    <h3>Total Appointments</h3>
+                    <span class="card-icon">AP</span>
+                </div>
+                <p id="appointmentCount">0</p>
+            </div>
+
+            <div class="card">
+                <div class="card-top">
+                    <h3>Total Prescriptions</h3>
+                    <span class="card-icon">RX</span>
+                </div>
+                <p id="prescriptionCount">0</p>
+            </div>
+
+            <div class="card" data-hide-for="DOCTOR">
+                <div class="card-top">
+                    <h3>Total Bills</h3>
+                    <span class="card-icon">BL</span>
+                </div>
+                <p id="billCount">0</p>
+            </div>
+
+            <div class="card" data-hide-for="DOCTOR">
+                <div class="card-top">
+                    <h3>Total Paid Revenue</h3>
+                    <span class="card-icon">₹</span>
+                </div>
+                <p id="paidRevenue">₹0.00</p>
+            </div>
+
+        </div>
+
+        <div class="dashboard-grid-2">
+
+            <!-- Appointment Breakdown -->
+            <div class="panel-card">
+
+                <div class="panel-header">
+                    <h3>Appointment Breakdown</h3>
+                </div>
+
+                <div class="panel-body">
+                    <div class="breakdown-row">
+
+                        <div class="breakdown-box breakdown-scheduled">
+                            <span id="scheduledCount">0</span>
+                            <p>Scheduled</p>
+                        </div>
+
+                        <div class="breakdown-box breakdown-completed">
+                            <span id="completedCount">0</span>
+                            <p>Completed</p>
+                        </div>
+
+                        <div class="breakdown-box breakdown-cancelled">
+                            <span id="cancelledCount">0</span>
+                            <p>Cancelled</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="panel-card">
+
+                <div class="panel-header">
+                    <h3>Quick Actions</h3>
+                </div>
+
+                <div class="panel-body">
+                    <div class="quick-actions-grid">
+
+                        <a class="quick-action-btn" href="/patients/add" data-hide-for="DOCTOR">
+                            Add Patient
+                        </a>
+
+                        <a class="quick-action-btn" href="/appointments">
+                            Book Appointment
+                        </a>
+
+                        <a class="quick-action-btn" href="/prescriptions" data-hide-for="RECEPTIONIST">
+                            New Prescription
+                        </a>
+
+                        <a class="quick-action-btn" href="/billing" data-hide-for="DOCTOR">
+                            Create Bill
+                        </a>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="dashboard-grid-2">
+
+            <!-- Recent Appointments -->
+            <div class="panel-card" id="recentAppointmentsPanel">
+
+                <div class="panel-header">
+                    <h3>Recent Appointments</h3>
+                    <a class="view-all-link" href="/appointments">View All</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="custom-table">
+
+                        <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Date &amp; Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="recentAppointmentsBody">
+                        <tr>
+                            <td colspan="5" style="text-align:center;padding:20px;">
+                                Loading...
+                            </td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- Recent Invoices -->
+            <div class="panel-card" data-hide-for="DOCTOR">
+
+                <div class="panel-header">
+                    <h3>Recent Invoices</h3>
+                    <a class="view-all-link" href="/billing">View All</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="custom-table">
+
+                        <thead>
+                        <tr>
+                            <th>Bill #</th>
+                            <th>Patient</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="recentInvoicesBody">
+                        <tr>
+                            <td colspan="5" style="text-align:center;padding:20px;">
+                                Loading...
+                            </td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/js/dashboard.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Accounts - Hospital Management System</title>
+
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="dashboard-page">
+
+<div class="dashboard-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <div class="sidebar-header">
+      <span class="brand-icon">+</span>
+      <h2>Hospital Management</h2>
+    </div>
+
+    <nav class="sidebar-nav">
+
+      <span class="nav-section-label">Main Navigation</span>
+
+      <a href="/dashboard">
+        Dashboard
+      </a>
+
+      <a href="/patients">
+        Patients
+      </a>
+
+      <a href="/doctors">
+        Doctors
+      </a>
+
+      <a href="/appointments">
+        Appointments
+      </a>
+
+      <span class="nav-section-label">Clinical &amp; Finance</span>
+
+      <a href="/prescriptions">
+        Prescriptions
+      </a>
+
+      <a href="/billing">
+        Billing &amp; Invoice
+      </a>
+
+      <span class="nav-section-label" data-hide-for="DOCTOR,RECEPTIONIST">Administration</span>
+
+      <a href="/staff" class="active" data-hide-for="DOCTOR,RECEPTIONIST">
+        Staff Accounts
+      </a>
+
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-avatar" id="sidebarAvatar">U</div>
+      <div class="sidebar-footer-info">
+        <div class="sidebar-footer-name" id="sidebarUserName">User</div>
+        <span class="sidebar-footer-role" id="sidebarUserRole">ROLE</span>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- Main Content -->
+  <div class="content">
+
+    <div class="page-header">
+
+      <div>
+        <h1>Staff Accounts</h1>
+        <p>Create login accounts for doctors, receptionists, and admins</p>
+      </div>
+
+      <button
+              type="button"
+              class="logout-btn"
+              onclick="handleLogout()"
+      >
+        Logout
+      </button>
+
+    </div>
+
+    <!-- Shown only to non-admins who reach this page directly -->
+    <div class="panel-card" id="accessRestrictedNotice" style="display:none;">
+      <div class="panel-body" style="text-align:center;padding:48px 24px;">
+        <h3 style="margin-bottom:8px;">Access Restricted</h3>
+        <p style="color:var(--text-muted);">
+          Only Administrators can create staff accounts.
+        </p>
+      </div>
+    </div>
+
+    <!-- The actual form, only shown to Admins -->
+    <div id="staffFormWrapper">
+
+      <div class="panel-card" style="max-width:520px;">
+
+        <div class="panel-header">
+          <h3>Create New Staff Account</h3>
+        </div>
+
+        <div class="panel-body">
+
+          <p id="formMessage" style="margin-bottom:16px;font-size:13px;"></p>
+
+          <form id="staffForm">
+
+            <div class="form-group">
+              <label class="form-label" for="staffName">
+                Full Name <span class="required">*</span>
+              </label>
+              <input
+                      type="text"
+                      id="staffName"
+                      class="form-input"
+                      placeholder="e.g. Dr. Neha Kapoor"
+                      required
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="staffEmail">
+                Email <span class="required">*</span>
+              </label>
+              <input
+                      type="email"
+                      id="staffEmail"
+                      class="form-input"
+                      placeholder="e.g. n.kapoor@hospital.com"
+                      required
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="staffPassword">
+                Temporary Password <span class="required">*</span>
+              </label>
+              <input
+                      type="password"
+                      id="staffPassword"
+                      class="form-input"
+                      placeholder="Set a temporary password"
+                      minlength="6"
+                      required
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="staffRole">
+                Role <span class="required">*</span>
+              </label>
+              <select
+                      id="staffRole"
+                      class="form-select"
+                      required
+              >
+                <option value="">Select Role</option>
+                <option value="DOCTOR">Doctor</option>
+                <option value="RECEPTIONIST">Receptionist</option>
+                <option value="ADMIN">Admin</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%;">
+              Create Account
+            </button>
+
+          </form>
+
+        </div>
+
+      </div>
+
+      <!-- Reminder shown after selecting Doctor role -->
+      <div class="panel-card" id="doctorReminder" style="margin-top:20px;max-width:520px;display:none;">
+        <div class="panel-body">
+          <p style="font-size:13px;color:var(--text-muted);">
+            <strong>Note:</strong> creating a login here does not create a doctor
+            profile. After creating this account, go to the
+            <a href="/doctors" style="color:var(--primary);font-weight:600;">Doctors page</a>
+            and add their clinical profile — <strong>using this same email</strong> —
+            so they show up correctly in appointments and the doctor list.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script src="/js/staff.js"></script>
+
+</body>
+</html>

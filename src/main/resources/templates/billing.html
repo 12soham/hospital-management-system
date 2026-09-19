@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Billing & Invoice - Hospital Management</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="dashboard-page">
+
+<div class="dashboard-container">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+            <span class="brand-icon">+</span>
+            <h2>Hospital Management</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <span class="nav-section-label">Main Navigation</span>
+
+            <a href="/dashboard">
+                Dashboard
+            </a>
+
+            <a href="/patients">
+                Patients
+            </a>
+
+            <a href="/doctors">
+                Doctors
+            </a>
+
+            <a href="/appointments">
+                Appointments
+            </a>
+
+            <span class="nav-section-label">Clinical &amp; Finance</span>
+
+            <a href="/prescriptions">
+                Prescriptions
+            </a>
+
+            <a href="/billing" class="active">
+                Billing &amp; Invoice
+            </a>
+
+            <span class="nav-section-label" data-hide-for="DOCTOR,RECEPTIONIST">Administration</span>
+
+            <a href="/staff" data-hide-for="DOCTOR,RECEPTIONIST">
+                Staff Accounts
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-footer-avatar" id="sidebarAvatar">U</div>
+            <div class="sidebar-footer-info">
+                <div class="sidebar-footer-name" id="sidebarUserName">User</div>
+                <span class="sidebar-footer-role" id="sidebarUserRole">ROLE</span>
+            </div>
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <div class="content">
+
+        <div class="page-header">
+
+            <div>
+                <h1>Billing &amp; Financial Records</h1>
+                <p>Manage hospital bills and payments</p>
+            </div>
+
+            <button
+                    type="button"
+                    class="logout-btn"
+                    onclick="handleLogout()">
+                Logout
+            </button>
+
+        </div>
+
+
+        <div class="controls-bar">
+
+            <div class="filters-group">
+
+                <div class="search-bar">
+                    <input
+                            type="text"
+                            id="billSearchInput"
+                            class="form-input"
+                            placeholder="Search by invoice #, patient name, phone...">
+                </div>
+
+                <select id="billStatusFilter" class="form-select">
+                    <option value="">All Payment Statuses</option>
+                    <option value="PAID">Paid</option>
+                    <option value="PENDING">Unpaid</option>
+                </select>
+
+                <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="generateBillBtn"
+                        data-hide-for="DOCTOR">
+                    + Generate Bill
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= BILL TABLE ================= -->
+
+        <div class="panel-card">
+
+            <div class="table-responsive">
+                <table class="custom-table">
+
+                    <thead>
+
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Patient Name</th>
+                        <th>Date Generated</th>
+                        <th>Payment Method</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="billTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align:center;padding:24px;">
+                            Loading bills...
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+            <div class="panel-body">
+                <div class="pagination-wrapper">
+
+                    <div id="billPaginationInfo">
+                        Showing 0 bills
+                    </div>
+
+                    <div class="pagination-controls">
+
+                        <button
+                                class="btn btn-secondary btn-sm"
+                                id="billPrevBtn"
+                                disabled>
+                            Previous
+                        </button>
+
+                        <button
+                                class="btn btn-secondary btn-sm"
+                                id="billNextBtn"
+                                disabled>
+                            Next
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= GENERATE BILL MODAL ================= -->
+
+<div id="billModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>Generate Bill</h2>
+
+            <button
+                    type="button"
+                    id="closeBillModal"
+                    class="close-btn">
+                &times;
+            </button>
+
+        </div>
+
+
+        <form id="billForm">
+
+            <!-- Bill ID is generated by database -->
+            <input
+                    type="hidden"
+                    id="billId">
+
+            <!-- Patient ID is auto-filled from the selected appointment -->
+            <input
+                    type="hidden"
+                    id="patientId">
+
+
+            <div class="form-group">
+
+                <label for="appointmentId">
+                    Appointment
+                </label>
+
+                <select
+                        id="appointmentId"
+                        class="form-select"
+                        required>
+                    <option value="">Select Appointment</option>
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="amount">
+                    Bill Amount
+                </label>
+
+                <input
+                        type="number"
+                        id="amount"
+                        min="0.01"
+                        step="0.01"
+                        placeholder="Enter bill amount"
+                        required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="paymentMethod">
+                    Payment Method
+                </label>
+
+                <select
+                        id="paymentMethod"
+                        class="form-select"
+                        required>
+                    <option value="">Select Payment Method</option>
+                    <option value="CASH">Cash</option>
+                    <option value="UPI">UPI</option>
+                    <option value="CREDIT_CARD">Credit Card</option>
+                    <option value="DEBIT_CARD">Debit Card</option>
+                    <option value="NET_BANKING">Net Banking</option>
+                </select>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                        type="button"
+                        class="btn-secondary"
+                        id="cancelBillBtn">
+                    Cancel
+                </button>
+
+                <button
+                        type="submit"
+                        class="btn-primary">
+                    Generate Bill
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ================= INVOICE MODAL ================= -->
+
+<div id="invoiceModal" class="modal">
+
+    <div class="modal-content invoice-modal">
+
+        <div class="modal-header">
+
+            <h2>Invoice</h2>
+
+            <button
+                    type="button"
+                    id="closeInvoiceModal"
+                    class="close-btn">
+                &times;
+            </button>
+
+        </div>
+
+
+        <div id="invoiceContent">
+
+            <!-- Invoice generated by JavaScript -->
+
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button
+                    type="button"
+                    class="btn-primary"
+                    onclick="printInvoice()">
+                Print / Download Invoice
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="/js/billing.js"></script>
+
+</body>
+
+</html>
